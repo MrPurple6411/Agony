@@ -12,20 +12,19 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <OutputPath>..\QMods\$(Configuration)\AssetTools\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>C:\Program Files (x86)\Steam\steamapps\common\Subnautica\QMods\AssetTools\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>C:\Program Files (x86)\Steam\steamapps\common\Subnautica\QMods\AssetTools\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -36,49 +35,46 @@
   <ItemGroup>
     <Reference Include="0Harmony-1.2.0.1">
       <HintPath>..\Dependencies\0Harmony-1.2.0.1.dll</HintPath>
-      <Private>True</Private>
+      <Private>false</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\Dependencies\Assembly-CSharp.dll</HintPath>
-      <Private>True</Private>
+      <Private>false</Private>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>..\Dependencies\Assembly-CSharp-firstpass.dll</HintPath>
-      <Private>True</Private>
+      <Private>false</Private>
     </Reference>
     <Reference Include="LitJson">
       <HintPath>..\Dependencies\LitJson.dll</HintPath>
-      <Private>True</Private>
+      <Private>false</Private>
     </Reference>
     <Reference Include="System">
-      <Private>True</Private>
+      <Private>false</Private>
     </Reference>
     <Reference Include="System.Core">
-      <Private>True</Private>
+      <Private>false</Private>
     </Reference>
     <Reference Include="System.Xml.Linq">
-      <Private>True</Private>
+      <Private>false</Private>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Data">
-      <Private>True</Private>
+      <Private>false</Private>
     </Reference>
     <Reference Include="System.Xml">
-      <Private>True</Private>
+      <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\Dependencies\UnityEngine.dll</HintPath>
-      <Private>True</Private>
+      <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule">
       <HintPath>..\Dependencies\UnityEngine.AssetBundleModule.dll</HintPath>
-      <Private>True</Private>
+      <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\Dependencies\UnityEngine.CoreModule.dll</HintPath>
-      <Private>True</Private>
+      <Private>false</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -120,7 +116,6 @@
     <PostBuildEvent>copy "$(TargetDir)$(TargetFileName)" "$(TargetDir)$(TargetFileName).tmp"
 del "$(TargetDir)\*.dll"
 copy "$(TargetDir)$(TargetFileName).tmp" "$(TargetDir)$(TargetFileName)"
-del  "$(TargetDir)$(TargetFileName).tmp"
-del  "$(TargetDir)$(TargetName).pdb"</PostBuildEvent>
+del  "$(TargetDir)$(TargetFileName).tmp"</PostBuildEvent>
   </PropertyGroup>
 </Project>
