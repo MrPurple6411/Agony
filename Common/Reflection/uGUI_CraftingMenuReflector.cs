@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System;
+using System.Collections.Generic;
 
 namespace Agony.Common.Reflection
 {
@@ -21,10 +22,10 @@ namespace Agony.Common.Reflection
             return (bool)interactableFieldInfo.GetValue(menu);
         }
 
-        public static uGUI_CraftNode GetIcons(uGUI_CraftingMenu menu)
+        public static Dictionary<uGUI_ItemIcon, uGUI_CraftingMenu.Node> GetIcons(uGUI_CraftingMenu menu)
         {
             if (menu == null) throw new ArgumentNullException("menu is null");
-            return (uGUI_CraftNode)iconsFieldInfo.GetValue(menu);
+            return (Dictionary<uGUI_ItemIcon, uGUI_CraftingMenu.Node>)iconsFieldInfo.GetValue(menu);
         }
     }
 }

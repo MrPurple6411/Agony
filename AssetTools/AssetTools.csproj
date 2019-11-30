@@ -31,23 +31,27 @@
     <DocumentationFile>
     </DocumentationFile>
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony-1.2.0.1">
       <HintPath>..\Dependencies\0Harmony-1.2.0.1.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\Dependencies\Assembly-CSharp.dll</HintPath>
-      <Private>false</Private>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\DependenciesBZ\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>..\Dependencies\Assembly-CSharp-firstpass.dll</HintPath>
-      <Private>false</Private>
+    <Reference Include="Assembly-CSharp_publicized">
+      <HintPath>..\..\DependenciesBZ\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
     <Reference Include="LitJson">
       <HintPath>..\Dependencies\LitJson.dll</HintPath>
       <Private>false</Private>
+    </Reference>
+    <Reference Include="SMLHelper">
+      <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\SubnauticaZero\QMods\Modding Helper\SMLHelper.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System">
       <Private>false</Private>

@@ -2,6 +2,9 @@
 using Agony.AssetTools.Wrappers;
 using Agony.Common;
 using UWE;
+using SMLHelper.V2.Crafting;
+using SMLHelper.V2.Handlers;
+using System;
 
 namespace Agony.Defabricator
 {
@@ -11,7 +14,7 @@ namespace Agony.Defabricator
         {
             private static readonly HashSet<TechType> blacklist = new HashSet<TechType>(); 
             private static readonly Dictionary<TechType, TechType> cache = new Dictionary<TechType, TechType>();
-            private static readonly TechType techBase = (TechType)(int)-1.689e+6;
+            private static readonly TechType techBase = (TechType)(int)-1.000e+6;
             private static readonly string nonRecyclableText = "<color=#FF3030FF>Non-recyclable</color>";
             private static readonly string nonRecyclableTextID = "Agony_Defabricator_NonRecyclable";
             private static readonly string nonRecyclableTooltip = "Unfortunately there are no techniques that could be used in order to recycle this item.";
@@ -36,17 +39,17 @@ namespace Agony.Defabricator
             public static bool TryGet(TechType originTech, out TechType recyclingTech)
             {
                 recyclingTech = TechType.None;
-                if (originTech == TechType.None) { return false; }
+                if (originTech == TechType.None || (int)originTech <= (int)techBase) { return false; }
                 if (cache.TryGetValue(originTech, out recyclingTech)) { return true; }
 
-                var originData = CraftData.Get(originTech, true);
-                if (originData == null)
+
+                if (!TechData.TryGetValue(originTech, out JsonValue originJData))
                 {
-                    Logger.Error($"Failed to load ITechData for TechType '{originTech}'.");
+                    Logger.Error($"Failed to load TechData for TechType '{originTech}'.");
                     return false;
                 }
 
-                recyclingTech = techBase + cache.Count;
+                recyclingTech = techBase - cache.Count;
                 cache[originTech] = recyclingTech;
                 TechTypeExtensionsWrapper.Link(recyclingTech, techKeyPrefix + recyclingTech);
                 if (Config.IsBlacklisted(originTech)) { blacklist.Add(recyclingTech); }
@@ -56,42 +59,41 @@ namespace Agony.Defabricator
                 LoadRecyclingPrefab(originTech, recyclingTech);
                 LoadRecyclingText(originTech, recyclingTech);
                 LoadRecyclingTooltip(recyclingTech);
-                
+
                 return true;
             }
 
             
 
             private static void LoadRecyclingData(TechType originTech, TechType recyclingTech)
-            {
-                if (IsBlackListed(recyclingTech))
-                {
-                    CraftDataWrapper.SetTechData(recyclingTech, new TechData(0, new Ingredient[0], new TechType[0]));
+            {                if (IsBlackListed(recyclingTech))
+                {                    CraftDataHandler.SetTechData(recyclingTech, new RecipeData() {craftAmount = 0 });
                     return;
+                }                                var ingredients = new Dictionary<TechType, int>();                if (TechData.GetCraftAmount(originTech) > 0)
+                {                    ingredients[originTech] = TechData.GetCraftAmount(originTech); 
                 }
-
-                var originData = CraftData.Get(originTech);
-                var ingredients = new Dictionary<TechType, int>();
-                if (originData.craftAmount > 0) { ingredients[originTech] = originData.craftAmount; }
-                for (var i = 0; i < originData.linkedItemCount; i++)
+                if (TechData.GetLinkedItems(originTech)!= null)
                 {
-                    var item = originData.GetLinkedItem(i);
-                    ingredients[item] = ingredients.ContainsKey(item) ? (ingredients[item] + 1) : 1;
-                }
-                var resIngs = new List<IIngredient>();
+                    for (var i = 0; i < TechData.GetLinkedItems(originTech).Count; i++)
+                    {
+                        TechType item = TechData.GetLinkedItems(originTech)[i];
+                        ingredients[item] = ingredients.ContainsKey(item) ? (ingredients[item] + 1) : 1;
+                    }
+                }                var resIngs = new List<Ingredient>();
                 ingredients.ForEach(x => resIngs.Add(new Ingredient(x.Key, x.Value)));
 
                 var linkedItems = new List<TechType>();
                 var isTool = IsPlayerToolWithEnergyMixin(originTech);
-                for(var i = 0; i < originData.ingredientCount; i++)
+                for(var i = 0; i < TechData.GetIngredients(originTech).Count; i++)
                 {
-                    var ing = originData.GetIngredient(i);
+                    var ing = TechData.GetIngredients(originTech)[i];
                     if (isTool && IsBattery(ing.techType)) { continue; }
                     var amount = UnityEngine.Mathf.FloorToInt(ing.amount * Config.GetYield(ing.techType));
-                    for(var j = 0; j < amount; j++) { linkedItems.Add(ing.techType); }
+                    for(int j = 0; j < amount; j++) { linkedItems.Add(ing.techType); }
                 }
-
-                CraftDataWrapper.SetTechData(recyclingTech, new TechData(0, resIngs, linkedItems));
+                RecipeData recipeData = new RecipeData() { craftAmount = 0, Ingredients = resIngs, LinkedItems = linkedItems };
+                CraftDataHandler.SetTechData(recyclingTech, recipeData);
+                TechData.Cache();
             }
 
             private static bool IsPlayerToolWithEnergyMixin(TechType techType)
@@ -152,20 +154,26 @@ namespace Agony.Defabricator
 
                 if (IsBlackListed(recyclingTech))
                 {
-                    var errorText = lang.Get(nonRecyclableTooltipID);
-                    LanguageWrapper.SetDefault("Tooltip_" + recyclingTech.AsString(), errorText);
-                    return;
+                    var errorText = lang.Get(nonRecyclableTooltipID);                    LanguageWrapper.SetDefault("Tooltip_" + recyclingTech.AsString(), errorText);                    return;
                 }
 
-                var data = CraftData.Get(recyclingTech);
-                if (data == null) return;
+                if (!TechData.TryGetValue(recyclingTech, out JsonValue data)) return;
                 var ings = new Dictionary<TechType, int>();
-                for(var i = 0; i < data.linkedItemCount; i++)
+                if (TechData.TryGetValue(recyclingTech, out JsonValue recyclingTechData))
                 {
-                    var item = data.GetLinkedItem(i);
-                    ings[item] = ings.ContainsKey(item) ? (ings[item] + 1) : 1;
+                    if (TechData.GetLinkedItems(recyclingTech) != null)
+                    {
+                        ICollection<TechType> items = TechData.GetLinkedItems(recyclingTech);
+                        if (items.Count > 0)
+                        {
+                            foreach (TechType techType in items)
+                            {
+                                var item = techType;
+                                ings[item] = ings.ContainsKey(item) ? (ings[item] + 1) : 1;
+                            }
+                        }
+                    }
                 }
-
                 var builder = new System.Text.StringBuilder();
                 foreach(var ing in ings)
                 {
@@ -178,10 +186,11 @@ namespace Agony.Defabricator
                     }
                     builder.Append(", ");
                 }
-                if (builder.Length >= 2) { builder.Length -= 2; }
-                var ingList = builder.ToString();
 
-                var tooltip = lang.Get(recycleTooltipID);
+                if (builder.Length >= 2) { builder.Length -= 2;
+                }
+                var ingList = builder.ToString();
+                var tooltip = lang.Get(recycleTooltipID); 
                 var formated = StringUtil.FormatWithFallback(tooltip, recycleTooltip, ingList);              
                 LanguageWrapper.SetDefault("Tooltip_" + recyclingTech.AsString(), formated);
             }

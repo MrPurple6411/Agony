@@ -13,6 +13,7 @@ namespace Agony.Common
                 return string.Format(unmanaged, args);
             }
             catch (FormatException) { }
+            
             return string.Format(fallback, args);
         }
     }

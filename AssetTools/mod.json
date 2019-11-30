@@ -4,7 +4,8 @@
   "Author": "PVD",
   "Version": "0.0.5",
   "Enable": true,
-  "ForBelowZero": false,
+  "ForBelowZero": true,
+  "Game": "BelowZero",
   "AssemblyName": "AgonyAssetTools.dll",
   "EntryMethod": "Agony.AssetTools.QMod.Patch"
 }

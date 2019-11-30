@@ -5,7 +5,8 @@
   "Version": "0.0.2",
   "Dependencies": [ "AgonyAssetTools" ],
   "Enable": true,
-  "ForBelowZero": false,
+  "ForBelowZero": true,
+  "Game": "BelowZero",
   "AssemblyName": "AgonyDefabricator.dll",
   "EntryMethod": "Agony.Defabricator.QMod.Patch"
 }

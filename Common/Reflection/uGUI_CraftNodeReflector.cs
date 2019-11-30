@@ -1,37 +1,44 @@
 ﻿using System.Reflection;
 using System;
+using System.Collections.Generic;
 
 namespace Agony.Common.Reflection
 {
     public static class uGUI_CraftNodeReflector
     {
-        private static readonly FieldInfo viewFieldInfo = typeof(uGUI_CraftNode).GetField("view", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static readonly PropertyInfo indexPropertyInfo = typeof(uGUI_CraftNode).GetProperty("index", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static readonly PropertyInfo visiblePropertyInfo = typeof(uGUI_CraftNode).GetProperty("visible", BindingFlags.NonPublic | BindingFlags.Instance);
-        private static readonly MethodInfo isLockedInHierarchyMethodInfo = typeof(uGUI_CraftNode).GetMethod("IsLockedInHierarchy", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static readonly PropertyInfo actionpropertyInfo = typeof(uGUI_CraftingMenu.Node).GetProperty("action", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static readonly PropertyInfo expandedpropertyInfo = typeof(uGUI_CraftingMenu.Node).GetProperty("expanded", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static readonly PropertyInfo techTypePropertyInfo = typeof(uGUI_CraftingMenu.Node).GetProperty("techType", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static readonly PropertyInfo iconPropertyInfo = typeof(uGUI_CraftingMenu.Node).GetProperty("icon", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static readonly MethodInfo GetEnumeratorMethodInfo = typeof(uGUI_CraftingMenu.Node).GetMethod("GetEnumerator", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        public static bool GetVisible(uGUI_CraftNode node)
+        public static bool GetExpanded(uGUI_CraftingMenu.Node node)
         {
             if (node == null) throw new ArgumentNullException("node is null");
-            return (bool)visiblePropertyInfo.GetValue(node, null);
+            return (bool)expandedpropertyInfo.GetValue(node, null);
         }
 
-        public static int GetIndex(uGUI_CraftNode node)
+        public static TechType GetTechType(uGUI_CraftingMenu.Node node)
         {
             if (node == null) throw new ArgumentNullException("node is null");
-            return (int)indexPropertyInfo.GetValue(node, null);
+            return (TechType)techTypePropertyInfo.GetValue(node, null);
+        }
+        public static uGUI_ItemIcon GetIcon(uGUI_CraftingMenu.Node node)
+        {
+            if (node == null) throw new ArgumentNullException("node is null");
+            return (uGUI_ItemIcon)iconPropertyInfo.GetValue(node, null);
         }
 
-        public static uGUI_CraftingMenu GetView(uGUI_CraftNode node)
+        public static TreeAction GetAction(uGUI_CraftingMenu.Node node)
         {
             if (node == null) throw new ArgumentNullException("node is null");
-            return (uGUI_CraftingMenu)viewFieldInfo.GetValue(node);
+            return (TreeAction)actionpropertyInfo.GetValue(node, null);
         }
 
-        public static bool IsLockedInHierarchy(uGUI_CraftNode node)
+        public static IEnumerator<uGUI_CraftingMenu.Node> GetEnumerator(uGUI_CraftingMenu.Node node)
         {
             if (node == null) throw new ArgumentNullException("node is null");
-            return (bool)isLockedInHierarchyMethodInfo.Invoke(node, null);
+            return (IEnumerator<uGUI_CraftingMenu.Node>)GetEnumeratorMethodInfo.Invoke(node, null);
         }
     }
 }
