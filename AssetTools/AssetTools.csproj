@@ -40,55 +40,43 @@
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\DependenciesBZ\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>..\Dependencies\BelowZero\Assembly-CSharp-firstpass_publicized.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp_publicized">
-      <HintPath>..\..\DependenciesBZ\Assembly-CSharp_publicized.dll</HintPath>
+      <HintPath>..\Dependencies\BelowZero\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
     <Reference Include="LitJson">
       <HintPath>..\Dependencies\LitJson.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="SMLHelper">
-      <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\SubnauticaZero\QMods\SMLHelper_BZ\SMLHelper.dll</HintPath>
+      <HintPath>..\Dependencies\BelowZero\SMLHelper.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System">
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="System.Core">
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="System.Xml.Linq">
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="System.Xml">
-      <Private>false</Private>
-    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>..\Dependencies\UnityEngine.dll</HintPath>
+      <HintPath>..\Dependencies\BelowZero\UnityEngine.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule">
-      <HintPath>..\Dependencies\UnityEngine.AssetBundleModule.dll</HintPath>
+      <HintPath>..\Dependencies\BelowZero\UnityEngine.AssetBundleModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\Dependencies\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\Dependencies\BelowZero\UnityEngine.CoreModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SpriteUtil.cs" />
     <Compile Include="Wrappers\CraftData\CraftDataWrapper.cs" />
     <Compile Include="Wrappers\KnownTechWrapper.cs" />
     <Compile Include="Wrappers\Language\LanguageWrapper_Patches.cs" />
     <Compile Include="Wrappers\Language\LanguageWrapper.cs" />
     <Compile Include="Wrappers\PrefabDatabaseWrapper.cs" />
-    <Compile Include="Wrappers\SpriteManagerWrapper.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

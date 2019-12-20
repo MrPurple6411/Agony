@@ -55,7 +55,6 @@ namespace Agony.Defabricator
                 if (Config.IsBlacklisted(originTech)) { blacklist.Add(recyclingTech); }
                 KnownTechWrapper.AddDefault(recyclingTech);
                 LoadRecyclingData(originTech, recyclingTech);
-                LoadRecyclingSprite(originTech, recyclingTech);
                 LoadRecyclingPrefab(originTech, recyclingTech);
                 LoadRecyclingText(originTech, recyclingTech);
                 LoadRecyclingTooltip(recyclingTech);
@@ -120,12 +119,6 @@ namespace Agony.Defabricator
                 {
                     Logger.Warning($"Failed to load prefabID or fileName for TechType '{originTech}'.");
                 }
-            }
-
-            private static void LoadRecyclingSprite(TechType originTech, TechType recyclingTech)
-            {
-                var originSprite = SpriteManager.Get(SpriteManager.Group.Item, originTech.AsString());
-                SpriteManagerWrapper.Set(SpriteManager.Group.Item, recyclingTech.AsString(), originSprite);
             }
 
             private static void LoadRecyclingText(TechType originTech, TechType recyclingTech)
