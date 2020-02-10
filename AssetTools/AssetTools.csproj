@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Agony</RootNamespace>
     <AssemblyName>AgonyAssetTools</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <OutputPath>..\QMods\$(Configuration)\AssetTools\</OutputPath>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -74,8 +75,8 @@
   <ItemGroup>
     <Compile Include="Wrappers\CraftData\CraftDataWrapper.cs" />
     <Compile Include="Wrappers\KnownTechWrapper.cs" />
-    <Compile Include="Wrappers\Language\LanguageWrapper_Patches.cs" />
     <Compile Include="Wrappers\Language\LanguageWrapper.cs" />
+    <Compile Include="Wrappers\Language\LanguageWrapper_Patches.cs" />
     <Compile Include="Wrappers\PrefabDatabaseWrapper.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -102,6 +103,7 @@
   <ItemGroup>
     <Content Include="ChangeLog.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\Common\Common.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
