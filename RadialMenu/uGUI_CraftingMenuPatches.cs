@@ -1,5 +1,4 @@
-﻿using Agony.Common.Reflection;
-using UnityEngine;
+﻿using UnityEngine;
 using HarmonyLib;
 
 namespace Agony.RadialTabs

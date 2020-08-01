@@ -80,7 +80,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RadialCell.cs" />
     <Compile Include="uGUI_CraftingMenuPatches.cs" />
-    <Compile Include="uGUI_CraftNodePatches.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="mod_BelowZero.json" />
