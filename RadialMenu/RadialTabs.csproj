@@ -79,7 +79,7 @@
     <Compile Include="QMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RadialCell.cs" />
-    <Compile Include="uGUI_CraftingMenuActionPatch.cs" />
+    <Compile Include="uGUI_CraftingMenuPatches.cs" />
     <Compile Include="uGUI_CraftNodePatches.cs" />
   </ItemGroup>
   <ItemGroup>

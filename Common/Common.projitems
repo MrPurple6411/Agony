@@ -14,8 +14,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Animation\ObjectAnimation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\CraftDataReflector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Reflection\LanguageReflector.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Reflection\uGUI_CraftingMenuReflector.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Reflection\uGUI_CraftNodeReflector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Updater.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Util\ConfigUtil.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\DictionaryExtensions.cs" />

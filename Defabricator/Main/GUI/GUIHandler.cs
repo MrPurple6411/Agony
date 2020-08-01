@@ -7,55 +7,51 @@ namespace Agony.Defabricator
     {
         private static partial class GUIHandler
         {
-            [HarmonyPatch(typeof(uGUI_CraftingMenu), "OnSelect")]
+            [HarmonyPatch(typeof(uGUI_CraftingMenu), nameof(uGUI_CraftingMenu.OnSelect))]
             private static class uGUI_CraftingMenuOnSelectPatch
             {
                 private static void Postfix(uGUI_CraftingMenu __instance) { OnCraftingMenuSelected(__instance); }
             }
 
-            [HarmonyPatch(typeof(uGUI_CraftingMenu), "OnDeselect")]
+            [HarmonyPatch(typeof(uGUI_CraftingMenu), nameof(uGUI_CraftingMenu.OnDeselect))]
             private static class uGUI_CraftingMenuOnDeselectPatch
             {
                 private static void Postfix(uGUI_CraftingMenu __instance) { OnCraftingMenuDeselected(__instance); }
             }
 
-            [HarmonyPatch(typeof(uGUI_CraftingMenu), "ActionAvailable")]
+            [HarmonyPatch(typeof(uGUI_CraftingMenu), nameof(uGUI_CraftingMenu.ActionAvailable))]
             private static class uGUI_CraftingMenuActionAvailablePatch
             {
-                private static void Postfix(uGUI_CraftingMenu __instance, ref bool __result, uGUI_CraftNode sender)
+                private static void Postfix(uGUI_CraftingMenu __instance, ref bool __result, uGUI_CraftingMenu.Node sender)
                 {
                     if (!Active) return;
                     if (CurrentMenu != __instance) return;
                     if (sender.action != TreeAction.Craft) return;
-                    __result &= !RecyclingData.IsBlackListed(sender.techType0);
+                    __result &= !RecyclingData.IsBlackListed(sender.techType);
                 }
             }
 
-            [HarmonyPatch(typeof(uGUI_CraftNode), "CreateIcon")]
+            [HarmonyPatch(typeof(uGUI_CraftingMenu), nameof(uGUI_CraftingMenu.CreateIcon))]
             private static class CreateIconPatch
             {
-                private static void Postfix(uGUI_CraftNode __instance)
+                private static void Postfix(uGUI_CraftingMenu __instance, uGUI_CraftingMenu.Node node)
                 {
                     if (!Active) return;
-                    if (uGUI_CraftNodeReflector.GetView(__instance) != CurrentMenu) return;
-
-                    GUIFormatter.PaintNodeColor(__instance);
+                    if (__instance != CurrentMenu) return;
+                    GUIFormatter.PaintNodeColor(node);
                 }
             }
 
-            [HarmonyPatch(typeof(uGUI_CraftNode), "UpdateIcon")]
-            private static class uGUI_CraftNodeUpdateIconPatch
+            [HarmonyPatch(typeof(uGUI_CraftingMenu), nameof(uGUI_CraftingMenu.UpdateIcons))]
+            private static class uGUI_CraftingMenuUpdateIconsPatch
             {
-                private static void Postfix(uGUI_CraftNode __instance, bool available)
+                private static void Postfix(uGUI_CraftingMenu __instance, uGUI_CraftingMenu.Node node)
                 {
-                    if (!Active) return;
-                    if (uGUI_CraftNodeReflector.GetView(__instance) != CurrentMenu) return;
-
-                    if (uGUI_CraftNodeReflector.GetVisible(__instance))
-                    {
-                        var enabled = available && !uGUI_CraftNodeReflector.IsLockedInHierarchy(__instance);
-                        GUIFormatter.SetNodeChroma(__instance, enabled);
-                    }
+                    if (!Active)
+                        return;
+                    if (__instance != CurrentMenu)
+                        return;
+                    GUIFormatter.SetNodeChroma(node, true);
                 }
             }
 

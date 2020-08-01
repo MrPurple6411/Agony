@@ -19,7 +19,8 @@ namespace Agony.Defabricator
                 {
                     try
                     {
-                        var prefab = CraftData.GetPrefabForTechType(TechType.Fabricator);
+                        CoroutineTask<GameObject> coroutine = CraftData.GetPrefabForTechTypeAsync(TechType.Fabricator, false);
+                        var prefab = coroutine.GetResult();
                         original = prefab.GetComponent<Fabricator>().leftBeam.GetComponent<Renderer>().sharedMaterial;
                         custom = new Material(original);
 
