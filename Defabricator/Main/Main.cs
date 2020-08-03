@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using Agony.Common.Reflection;
 using System;
+using QModManager.Utility;
+using SMLHelper.V2.Crafting;
+using SMLHelper.V2.Handlers;
 
 namespace Agony.Defabricator
 {
@@ -28,7 +31,7 @@ namespace Agony.Defabricator
             var menuRoot = GUIHandler.CurrentMenu.icons;
 
             menuRoot.ForEach(j => {
-                ForeachChildRecursively(j.Value, x => ReplaceNodeTech(x));
+                ForeachChildRecursively(j.Value, x => ReplaceNodeTech(x, true));
                 GUIHandler.CurrentMenu.UpdateNotifications(j.Value, ref c, ref n);
                 ForeachChildRecursively(j.Value, x => GUIFormatter.PaintNodeColorAnimated(x));
             });
@@ -45,7 +48,7 @@ namespace Agony.Defabricator
             menuRoot.ForEach(j => {
                 replacedNodeTechs.ForEach(x => x.Key.techType = x.Value);
                 replacedNodeTechs.Clear();
-                ForeachChildRecursively(j.Value, x => ReplaceNodeTech(x));
+                ForeachChildRecursively(j.Value, x => ReplaceNodeTech(x, false));
                 GUIHandler.CurrentMenu.UpdateNotifications(j.Value, ref c, ref n);
                 ForeachChildRecursively(j.Value, x => GUIFormatter.RevertNodeColorAnimated(x));
             });
@@ -61,15 +64,27 @@ namespace Agony.Defabricator
             }
         }
 
-        private static void ReplaceNodeTech(uGUI_CraftingMenu.Node node)
+        private static void ReplaceNodeTech(uGUI_CraftingMenu.Node node, bool activate)
         {
             if (node.action != TreeAction.Craft)
                 return;
 
-            if (RecyclingData.TryGet(node.techType, out TechType recyclingTech))
+            if (!node.techType.ToString().StartsWith("Defabricated") && activate && RecyclingData.TryGet(node.techType, out TechType recyclingTech))
             {
+                Logger.Log(Logger.Level.Info, $"", null, true);
                 replacedNodeTechs[node] = node.techType;
                 node.techType = recyclingTech;
+            }
+            else if (node.techType.ToString().StartsWith("Defabricated") && !activate)
+            {
+                Logger.Log(Logger.Level.Info, $"{node.techType} ", null, true);
+                string techString = node.techType.ToString().Replace("Defabricated", "");
+                if(Enum.TryParse(techString, out TechType techType))
+                {
+                    Logger.Log(Logger.Level.Info, $"", null, true);
+                    replacedNodeTechs[node] = node.techType;
+                    node.techType = techType;
+                }
             }
         }
     }
