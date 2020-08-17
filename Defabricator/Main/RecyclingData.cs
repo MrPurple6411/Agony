@@ -6,6 +6,12 @@ using QModManager.Utility;
 using SMLHelper.V2.Crafting;
 using SMLHelper.V2.Handlers;
 using UWE;
+#if SUBNAUTICA
+using Data = SMLHelper.V2.Crafting.TechData;
+#elif BELOWZERO
+using Data = SMLHelper.V2.Crafting.RecipeData;
+#endif
+
 
 namespace Agony.Defabricator
 {
@@ -41,7 +47,11 @@ namespace Agony.Defabricator
                 if (originTech == TechType.None) { return false; }
                 if (cache.TryGetValue(originTech, out recyclingTech)) { return true; }
 
+#if SUBNAUTICA
                 var originData = CraftData.Get(originTech, true);
+#elif BELOWZERO
+                var originData = CraftDataHandler.GetRecipeData(originTech);
+#endif
                 if (originData == null)
                 {
                     Logger.Log(Logger.Level.Error, $"Failed to load ITechData for TechType '{originTech}'.");
@@ -67,11 +77,15 @@ namespace Agony.Defabricator
             {
                 if (IsBlackListed(recyclingTech))
                 {
-                    CraftDataHandler.SetTechData(recyclingTech, new TechData(new List<Ingredient>()));
+                    CraftDataHandler.SetTechData(recyclingTech, new Data(new List<Ingredient>()));
                     return;
                 }
 
-                var originData = CraftData.Get(originTech);
+#if SUBNAUTICA
+                var originData = CraftData.Get(originTech, true);
+#elif BELOWZERO
+                var originData = CraftDataHandler.GetRecipeData(originTech);
+#endif
                 var ingredients = new Dictionary<TechType, int>();
                 if (originData.craftAmount > 0) { ingredients[originTech] = originData.craftAmount; }
                 for (var i = 0; i < originData.linkedItemCount; i++)
@@ -91,7 +105,7 @@ namespace Agony.Defabricator
                     var amount = UnityEngine.Mathf.FloorToInt(ing.amount * Config.GetYield(ing.techType));
                     for(var j = 0; j < amount; j++) { linkedItems.Add(ing.techType); }
                 }
-                TechData Data = new TechData() { craftAmount = 0, Ingredients = resIngs, LinkedItems = linkedItems };
+                Data Data = new Data() { craftAmount = 0, Ingredients = resIngs, LinkedItems = linkedItems };
                 CraftDataHandler.SetTechData(recyclingTech, Data);
             }
 
@@ -157,7 +171,11 @@ namespace Agony.Defabricator
                     return;
                 }
 
+#if SUBNAUTICA
                 var data = CraftData.Get(recyclingTech);
+#elif BELOWZERO
+                var data = CraftDataHandler.GetRecipeData(recyclingTech);
+#endif
                 if (data == null) return;
                 var ings = new Dictionary<TechType, int>();
                 for(var i = 0; i < data.linkedItemCount; i++)
