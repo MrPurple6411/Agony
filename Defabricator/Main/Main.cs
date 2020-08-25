@@ -14,6 +14,14 @@ namespace Agony.Defabricator
 
         public static void Patch() { KeyInputHandler.Patch(); }
 
+        internal static void LoadTechs()
+        {
+            foreach (TechType techType in Enum.GetValues(typeof(TechType)))
+            {
+                RecyclingData.TryGet(techType, out _);
+            }
+        }
+
         public static bool IsCurrentCrafter(Crafter crafter)
         {
             if (!Active) return false;
@@ -28,13 +36,11 @@ namespace Agony.Defabricator
             Active = true;
 
             int c = 0, n = 0;
-            var menuRoot = GUIHandler.CurrentMenu.icons;
+            var menuRoot = GUIHandler.CurrentMenu.tree;
 
-            menuRoot.ForEach(j => {
-                ForeachChildRecursively(j.Value, x => ReplaceNodeTech(x, true));
-                GUIHandler.CurrentMenu.UpdateNotifications(j.Value, ref c, ref n);
-                ForeachChildRecursively(j.Value, x => GUIFormatter.PaintNodeColorAnimated(x));
-            });
+            ForeachChildRecursively(menuRoot, x => ReplaceNodeTech(x, true));
+            GUIHandler.CurrentMenu.UpdateNotifications(menuRoot, ref c, ref n);
+            ForeachChildRecursively(menuRoot, x => GUIFormatter.PaintNodeColorAnimated(x));
         }
 
         private static void Deactivate()
@@ -43,15 +49,11 @@ namespace Agony.Defabricator
             Active = false;
 
             int c = 0, n = 0;
-            var menuRoot = GUIHandler.CurrentMenu.icons;
+            var menuRoot = GUIHandler.CurrentMenu.tree;
 
-            menuRoot.ForEach(j => {
-                replacedNodeTechs.ForEach(x => x.Key.techType = x.Value);
-                replacedNodeTechs.Clear();
-                ForeachChildRecursively(j.Value, x => ReplaceNodeTech(x, false));
-                GUIHandler.CurrentMenu.UpdateNotifications(j.Value, ref c, ref n);
-                ForeachChildRecursively(j.Value, x => GUIFormatter.RevertNodeColorAnimated(x));
-            });
+            ForeachChildRecursively(menuRoot, x => ReplaceNodeTech(x, false));
+            GUIHandler.CurrentMenu.UpdateNotifications(menuRoot, ref c, ref n);
+            ForeachChildRecursively(menuRoot, x => GUIFormatter.RevertNodeColorAnimated(x));
         }
 
         private static void ForeachChildRecursively(uGUI_CraftingMenu.Node node, Action<uGUI_CraftingMenu.Node> action)
@@ -71,17 +73,14 @@ namespace Agony.Defabricator
 
             if (!node.techType.ToString().StartsWith("Defabricated") && activate && RecyclingData.TryGet(node.techType, out TechType recyclingTech))
             {
-                Logger.Log(Logger.Level.Info, $"", null, true);
                 replacedNodeTechs[node] = node.techType;
                 node.techType = recyclingTech;
             }
             else if (node.techType.ToString().StartsWith("Defabricated") && !activate)
             {
-                Logger.Log(Logger.Level.Info, $"{node.techType} ", null, true);
                 string techString = node.techType.ToString().Replace("Defabricated", "");
                 if(Enum.TryParse(techString, out TechType techType))
                 {
-                    Logger.Log(Logger.Level.Info, $"", null, true);
                     replacedNodeTechs[node] = node.techType;
                     node.techType = techType;
                 }

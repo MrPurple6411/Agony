@@ -16,8 +16,7 @@ namespace Agony.Common
             if (PrefabComponentSearches<T>.cash.TryGetValue(techType, out result)) { return result; }
 
 
-            CoroutineTask<GameObject> coroutine = CraftData.GetPrefabForTechTypeAsync(techType, false);
-            var prefab = coroutine.GetResult();
+            GameObject prefab = CraftData.GetPrefabForTechType(TechType.Fabricator, false);
             result = prefab != null && prefab.GetComponent<T>();
 
             PrefabComponentSearches<T>.cash[techType] = result;

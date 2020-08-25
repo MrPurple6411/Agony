@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Agony.AssetTools.Wrappers;
 using Agony.Common;
+using Newtonsoft.Json;
 using QModManager.Utility;
 using SMLHelper.V2.Crafting;
 using SMLHelper.V2.Handlers;
@@ -21,23 +22,11 @@ namespace Agony.Defabricator
         {
             private static readonly HashSet<TechType> blacklist = new HashSet<TechType>(); 
             private static readonly Dictionary<TechType, TechType> cache = new Dictionary<TechType, TechType>();
-            private static readonly string nonRecyclableText = "<color=#FF3030FF>Non-recyclable</color>";
-            private static readonly string nonRecyclableTextID = "Agony_Defabricator_NonRecyclable";
-            private static readonly string nonRecyclableTooltip = "Unfortunately there are no techniques that could be used in order to recycle this item.";
-            private static readonly string nonRecyclableTooltipID = "Agony_Defabricator_NonRecyclable_Tooltip";
-            private static readonly string prefabIDPrefix = "Agony-Defabricator-RecyclingPrefab-";
-            private static readonly string recycleTextID = "Agony_Defabricator_Recycling";
+            private static readonly string nonRecyclableText = "<color=#FF3030FF>Non-recyclable:</color>  {0}";
+            private static readonly string nonRecyclableTooltip = "Unfortunately there are no techniques that could be used in order to recycle {0}.";
+            private static readonly string prefabIDPrefix = "Defabricator-Prefab-";
             private static readonly string recycleText = "<color=#00FA00FF>Recycle:</color> {0}";
-            private static readonly string recycleTooltipID = "Agony_Defabricator_Recycling_Tooltip";
             private static readonly string recycleTooltip = "Scrap for {0}.";
-
-            static RecyclingData()
-            {
-                LanguageWrapper.SetDefault(recycleTextID, recycleText);
-                LanguageWrapper.SetDefault(recycleTooltipID, recycleTooltip);
-                LanguageWrapper.SetDefault(nonRecyclableTextID, nonRecyclableText);
-                LanguageWrapper.SetDefault(nonRecyclableTooltipID, nonRecyclableTooltip);
-            }
 
             public static bool IsBlackListed(TechType recyclingTech) => blacklist.Contains(recyclingTech);
 
@@ -52,22 +41,21 @@ namespace Agony.Defabricator
 #elif BELOWZERO
                 var originData = CraftDataHandler.GetRecipeData(originTech);
 #endif
-                if (originData == null)
+                if (originData == null || !CraftDataWrapper.TryGetTechPrefab(originTech, out string originPrefab) || !PrefabDatabase.TryGetPrefabFilename(originPrefab, out string originFile))
                 {
-                    Logger.Log(Logger.Level.Error, $"Failed to load ITechData for TechType '{originTech}'.");
                     return false;
                 }
 
                 recyclingTech = TechTypeHandler.AddTechType($"Defabricated{originTech}", "", "");
                 cache[originTech] = recyclingTech;
                 if (Config.IsBlacklisted(originTech)) { blacklist.Add(recyclingTech); }
-                KnownTechWrapper.AddDefault(recyclingTech);
+                KnownTechHandler.UnlockOnStart(recyclingTech);
                 LoadRecyclingData(originTech, recyclingTech);
                 LoadRecyclingSprite(originTech, recyclingTech);
                 LoadRecyclingPrefab(originTech, recyclingTech);
                 LoadRecyclingText(originTech, recyclingTech);
                 LoadRecyclingTooltip(recyclingTech);
-                
+
                 return true;
             }
 
@@ -137,26 +125,20 @@ namespace Agony.Defabricator
 
             private static void LoadRecyclingSprite(TechType originTech, TechType recyclingTech)
             {
-                var originSprite = SpriteManager.Get(originTech);
-                SpriteManagerWrapper.Set(SpriteManager.Group.Item, recyclingTech.AsString(), originSprite);
+                SpriteHandler.RegisterSprite(recyclingTech, SpriteManager.Get(originTech));
             }
 
             private static void LoadRecyclingText(TechType originTech, TechType recyclingTech)
             {
-                var lang = Language.main;
-                if (lang == null) return;
-
                 if (IsBlackListed(recyclingTech))
                 {
-                    var translation1 = lang.Get(nonRecyclableTextID);
-                    LanguageWrapper.SetDefault(recyclingTech.AsString(), translation1);
+                    var translation1 = string.Format(nonRecyclableText, originTech.AsString());
+                    LanguageHandler.SetTechTypeName(recyclingTech, translation1);
                     return;
                 }
 
-                var techName = lang.Get(originTech.AsString());
-                var translation = lang.Get(recycleTextID);
-                var formated = FormatWithFallback(translation, recycleText, techName);
-                LanguageWrapper.SetDefault(recyclingTech.AsString(), formated);
+                var formated = string.Format(recycleText, Language.main.Get(originTech.AsString()));
+                LanguageHandler.SetTechTypeName(recyclingTech, formated);
             }
 
             private static void LoadRecyclingTooltip(TechType recyclingTech)
@@ -166,8 +148,8 @@ namespace Agony.Defabricator
 
                 if (IsBlackListed(recyclingTech))
                 {
-                    var errorText = lang.Get(nonRecyclableTooltipID);
-                    LanguageWrapper.SetDefault("Tooltip_" + recyclingTech.AsString(), errorText);
+                    var errorText = string.Format(nonRecyclableTooltip, recyclingTech.AsString().Replace("Defabricated", ""));
+                    LanguageHandler.SetTechTypeTooltip(recyclingTech, errorText);
                     return;
                 }
 
@@ -199,21 +181,8 @@ namespace Agony.Defabricator
                 if (builder.Length >= 2) { builder.Length -= 2; }
                 var ingList = builder.ToString();
 
-                var tooltip = lang.Get(recycleTooltipID);
-                var formated = FormatWithFallback(tooltip, recycleTooltip, ingList);
-                LanguageWrapper.SetDefault("Tooltip_" + recyclingTech.AsString(), formated);
-            }
-            public static string FormatWithFallback(string unmanaged, string fallback, params object[] args)
-            {
-                if (fallback == null)
-                    throw new ArgumentNullException("fallback is null");
-
-                try
-                {
-                    return string.Format(unmanaged, args);
-                }
-                catch (FormatException) { }
-                return string.Format(fallback, args);
+                var formated = string.Format(recycleTooltip, ingList);
+                LanguageHandler.SetTechTypeTooltip(recyclingTech, formated);
             }
         }
     }

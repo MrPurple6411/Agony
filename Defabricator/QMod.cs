@@ -3,6 +3,9 @@ using HarmonyLib;
 using System;
 using QModManager.Utility;
 using QModManager.API.ModLoading;
+using Newtonsoft.Json;
+using SMLHelper.V2.Handlers;
+using System.Collections.ObjectModel;
 
 namespace Agony.Defabricator
 {
@@ -22,6 +25,12 @@ namespace Agony.Defabricator
             {
                 Logger.Log(Logger.Level.Error, null, e);
             }
+        }
+
+        [QModPostPatch]
+        public static void PostPatch()
+        {
+            Main.LoadTechs();
         }
     }
 }

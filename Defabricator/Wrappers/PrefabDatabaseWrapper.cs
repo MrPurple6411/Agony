@@ -7,7 +7,7 @@ namespace Agony.AssetTools.Wrappers
 {
     public static class PrefabDatabaseWrapper
     {
-        [HarmonyPatch(typeof(PrefabDatabase), "TryGetPrefabFilename")]
+        [HarmonyPatch(typeof(PrefabDatabase), nameof(PrefabDatabase.TryGetPrefabFilename))]
         private static class TryGetPrefabFilenamePatch
         {
             private static bool Prefix(ref bool __result, string classId, ref string filename)

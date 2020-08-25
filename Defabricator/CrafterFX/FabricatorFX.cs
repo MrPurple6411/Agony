@@ -74,8 +74,13 @@ namespace Agony.Defabricator
             {
                 try
                 {
-                    fabricator.leftBeam.GetComponent<Renderer>().material = material;
-                    fabricator.rightBeam.GetComponent<Renderer>().material = material;
+                    Renderer leftBeam = fabricator?.leftBeam?.GetComponent<Renderer>();
+                    if(leftBeam != null)
+                        leftBeam.material = material;
+
+                    Renderer rightBeam = fabricator?.rightBeam?.GetComponent<Renderer>();
+                    if (rightBeam != null)
+                        rightBeam.material = material;
                 }
                 catch (Exception e) { Logger.Log(Logger.Level.Error, null, e); }
             }

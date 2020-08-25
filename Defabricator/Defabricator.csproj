@@ -54,6 +54,11 @@
       <HintPath>$(GameDir)\$(DataFolder)\Managed\LitJson.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\SubnauticaZero\SubnauticaZero_Data\Managed\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="QModInstaller">
       <HintPath>$(GameDir)\BepInEx\plugins\QModManager\QModInstaller.dll</HintPath>
       <Private>False</Private>
@@ -105,11 +110,7 @@
     <Compile Include="Main\RecyclingData.cs" />
     <Compile Include="CrafterFX\Handler.cs" />
     <Compile Include="Wrappers\CraftData\CraftDataWrapper.cs" />
-    <Compile Include="Wrappers\KnownTechWrapper.cs" />
-    <Compile Include="Wrappers\Language\LanguageWrapper.cs" />
-    <Compile Include="Wrappers\Language\LanguageWrapper_Patches.cs" />
     <Compile Include="Wrappers\PrefabDatabaseWrapper.cs" />
-    <Compile Include="Wrappers\SpriteManagerWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Items\example.json">
